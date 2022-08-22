@@ -1,8 +1,34 @@
+body {
+  background-color: #caad5f;
+}
+
 div {
   margin: 16px auto;
+  padding: 8px;
   line-height: 24px;
 }
 
+button {
+  border: none;
+  padding: 16px 24px;
+  background-color: #9b6e23;
+  color: #ffffee;
+  font-size: inherit;
+  font-family: inherit;
+  cursor: pointer;
+  clip-path: polygon(
+    8px 0,
+    calc(100% - 8px) 0,
+    100% 8px,
+    100% calc(100% - 8px),
+    calc(100% - 8px) 100%,
+    8px 100%,
+    0 calc(100% - 8px),
+    0 8px
+  );
+}
+
 .highlight {
-  background-color: yellow;
+  padding: 2px 0px;
+  background-color: #a5dee4;
 }
