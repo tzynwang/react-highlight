@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useState, useEffect, useRef } from 'react';
+import React, { memo, useState, useRef, useEffect, useMemo } from 'react';
 import './styles.css';
 
 function App(): React.ReactElement {
@@ -11,16 +11,12 @@ function App(): React.ReactElement {
   const handleSelectRange = (): void => {
     const range = document.getSelection();
     if (!range) return;
-    const startParentElement = range.anchorNode
-      ?.parentElement as HTMLSpanElement;
-    const endParentElement = range.focusNode?.parentElement as HTMLSpanElement;
-    console.info(startParentElement.id);
-    console.info(endParentElement.id);
+    if (range.anchorOffset === range.focusOffset) return;
 
-    if (
-      startParentElement.id === 'main' &&
-      startParentElement.id === endParentElement.id
-    ) {
+    const startElement = range.anchorNode?.parentElement as HTMLSpanElement;
+    const endElement = range.focusNode?.parentElement as HTMLSpanElement;
+
+    if (startElement.id === 'main' && startElement.id === endElement.id) {
       const start = range.anchorOffset;
       const end = range.focusOffset;
       if (start < end) {
@@ -29,33 +25,114 @@ function App(): React.ReactElement {
         setRange([end, start]);
       }
     }
-    if (startParentElement.id === '0') {
+
+    if (startElement.id === '0') {
       const start = range.anchorOffset;
-      let end = 0;
-      if (endParentElement.id === '0') {
-        end = range.focusOffset;
-      } else if (endParentElement.id === '1') {
-        // TODO: should check end
-        end = startParentElement.textContent?.length || 0 + range.focusOffset;
-      } else if (endParentElement.id === '2') {
-        // TODO: should check end
+      if (endElement.id === '0') {
+        const end = range.focusOffset;
+        setRange([start, end]);
+      } else if (endElement.id === '1') {
+        const end = (startElement.textContent?.length || 0) + range.focusOffset;
+        setRange([start, end]);
+      } else if (endElement.id === '2') {
         const spanOneLength =
           mainSpanRef.current?.childNodes[1].textContent?.length || 0;
-        end =
-          startParentElement.textContent?.length ||
-          0 + spanOneLength + range.focusOffset;
+        const end =
+          (startElement.textContent?.length || 0) +
+          spanOneLength +
+          range.focusOffset;
+        setRange([start, end]);
       }
-      setRange([start, end]);
     }
+
+    if (startElement.id === '1') {
+      if (endElement.id === '0') {
+        const start = range.focusOffset;
+        const end = (endElement.textContent?.length || 0) + range.anchorOffset;
+        setRange([start, end]);
+      } else if (endElement.id === '1') {
+        const spanZeroLength =
+          mainSpanRef.current?.childNodes[0].textContent?.length || 0;
+        const start = spanZeroLength + range.anchorOffset;
+        const end = spanZeroLength + range.focusOffset;
+        if (start > end) {
+          setRange([end, start]);
+        } else {
+          setRange([start, end]);
+        }
+      } else if (endElement.id === '2') {
+        const spanZeroLength =
+          mainSpanRef.current?.childNodes[0].textContent?.length || 0;
+        const spanOneLength =
+          mainSpanRef.current?.childNodes[1].textContent?.length || 0;
+        const start = spanZeroLength + range.anchorOffset;
+        const end = spanZeroLength + spanOneLength + range.focusOffset;
+        setRange([start, end]);
+      }
+    }
+
+    if (startElement.id === '2') {
+      const spanZeroLength =
+        mainSpanRef.current?.childNodes[0].textContent?.length || 0;
+      const spanOneLength =
+        mainSpanRef.current?.childNodes[1].textContent?.length || 0;
+      if (endElement.id === '0') {
+        const start = range.focusOffset;
+        const end = spanZeroLength + spanOneLength + range.anchorOffset;
+        setRange([start, end]);
+      } else if (endElement.id === '1') {
+        const start = spanZeroLength + range.focusOffset;
+        const end = spanZeroLength + spanOneLength + range.anchorOffset;
+        setRange([start, end]);
+      } else if (endElement.id === '2') {
+        const start = spanZeroLength + spanOneLength + range.anchorOffset;
+        const end = spanZeroLength + spanOneLength + range.focusOffset;
+        if (start < end) {
+          setRange([start, end]);
+        } else {
+          setRange([end, start]);
+        }
+      }
+    }
+
+    range.removeAllRanges();
   };
 
   /* Hooks */
   useEffect(() => {
-    setContent(`Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima autem
-    dolor praesentium pariatur. Ipsum quos assumenda minus, vero ad iure
-    totam corrupti culpa consectetur labore, non esse voluptas. Atque,
-    minus.`);
-    setRange([38, 69]);
+    setContent(`Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dicta
+    exercitationem alias atque vitae deserunt, accusamus tenetur in
+    necessitatibus, dolorem illum neque at? Atque numquam earum eum possimus
+    commodi ipsum iusto quo, minima, rem aliquid mollitia cum ab fuga vel soluta
+    laboriosam ea inventore sed iure id, dolores dolore suscipit? Tempora sunt
+    libero, dolore explicabo reprehenderit dolor dolorem quia quos voluptatibus
+    nam qui. Nam et corporis repellat ad facilis id cupiditate nisi. Repellat,
+    dolorem cum! Nobis, perferendis eaque tempora quis non corporis error eum, a
+    quae explicabo sit id officiis voluptates nostrum incidunt eius beatae vero.
+    Expedita consequatur at obcaecati nisi blanditiis itaque cumque culpa, ipsam
+    molestiae similique, ullam corporis voluptas facere numquam iste tempora.
+    Mollitia rem quisquam dolores, ipsum aliquid, repellendus corporis dolor
+    esse itaque magnam, sapiente eligendi iste blanditiis praesentium nihil
+    veniam autem. Tenetur autem quisquam perferendis maiores reiciendis vel
+    illum totam quibusdam voluptatum nesciunt natus provident cumque esse odit
+    impedit, minus earum sit consectetur minima optio. Voluptates reprehenderit
+    soluta et laudantium eius rerum fugiat velit ipsum doloremque possimus quod
+    officia beatae eveniet repellat labore odio dolorum, maxime molestias
+    distinctio est error incidunt? Aliquam mollitia animi magnam sapiente sint
+    corporis illum aut enim quidem voluptatum quaerat deserunt, voluptatem
+    explicabo nam nulla dolores adipisci, qui veniam facilis fugit consequatur
+    tempore ab necessitatibus. Reprehenderit, inventore! Fugit, perferendis
+    tempora officia ducimus non vero nulla dolores rerum ipsa nesciunt commodi
+    asperiores exercitationem aperiam fugiat obcaecati numquam quos voluptate
+    autem nisi debitis reiciendis possimus. Libero dignissimos in nostrum quasi
+    labore architecto ducimus delectus doloribus culpa consequuntur ad amet
+    facilis ratione, repellendus esse suscipit sed quibusdam sapiente commodi!
+    Placeat voluptatem sequi inventore ipsa quis exercitationem! Magnam
+    laudantium cupiditate repudiandae vel ratione atque eos animi beatae
+    molestiae, id numquam quidem assumenda corporis voluptas in minima
+    dignissimos distinctio, asperiores eius. Alias saepe facilis itaque
+    excepturi, consequuntur dicta!`);
+    setRange([37, 176]);
   }, []);
 
   /* Views */
@@ -89,7 +166,10 @@ function App(): React.ReactElement {
   return (
     <React.Fragment>
       <div>
-        <button type="button" onClick={() => setRange([38, 69])}>
+        <h1>highlight demo</h1>
+      </div>
+      <div>
+        <button type="button" onClick={() => setRange([37, 176])}>
           apply default highlight
         </button>
       </div>
