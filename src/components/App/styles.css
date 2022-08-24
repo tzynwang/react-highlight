@@ -32,3 +32,8 @@ button {
   padding: 2px 0px;
   background-color: #a5dee4;
 }
+
+.markRangeResult {
+  display: flex;
+  gap: 16px;
+}
