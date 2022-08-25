@@ -28,6 +28,10 @@ button {
   );
 }
 
+.resetButton {
+  background-color: #646A58;
+}
+
 .highlight {
   padding: 2px 0px;
   background-color: #a5dee4;
