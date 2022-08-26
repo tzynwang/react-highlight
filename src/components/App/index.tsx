@@ -1,6 +1,6 @@
 import React, { memo, useState, useRef, useEffect, useMemo } from 'react';
 import './styles.css';
-import type { Raw, MarkIndex } from './types';
+import type { MarkIndex } from './types';
 
 function App(): React.ReactElement {
   /* States */
@@ -30,24 +30,20 @@ function App(): React.ReactElement {
       // INFO: 沒有螢光筆標註區塊
       setMarkRange([]);
     } else {
-      const raw: Raw[] = [];
+      const raw: MarkIndex[] = [];
       childNodes.forEach((node) => {
         if (node.textContent) {
           // INFO: 跳過空的節點
           raw.push({
             type: node.nodeType,
             length: node.textContent.length,
+            range: [],
           });
         }
       });
-      const raw2: MarkIndex[] = raw.map((r, index) => ({
-        ...r,
-        index,
-        range: [],
-      }));
 
       const markIndex: MarkIndex[] = [];
-      raw2.forEach((markInfo, index) => {
+      raw.forEach((markInfo, index) => {
         if (index === 0) {
           markIndex.push({ ...markInfo, range: [0, markInfo.length] });
         } else {
@@ -70,9 +66,6 @@ function App(): React.ReactElement {
   };
   const resetHighlightArea = (): void => {
     if (mainSpanRef.current) {
-      mainSpanRef.current.childNodes.forEach((node) => {
-        node.remove();
-      });
       mainSpanRef.current.innerText = content;
     }
   };
