@@ -68,6 +68,14 @@ function App(): React.ReactElement {
       setMarkRange(final);
     }
   };
+  const resetHighlightArea = (): void => {
+    if (mainSpanRef.current) {
+      mainSpanRef.current.childNodes.forEach((node) => {
+        node.remove();
+      });
+      mainSpanRef.current.innerText = content;
+    }
+  };
 
   /* Views */
   const RenderContent = useMemo(() => {
@@ -143,6 +151,15 @@ function App(): React.ReactElement {
       <div>
         <button type="button" onClick={calculateHighlightArea}>
           calculate highlight areas
+        </button>
+      </div>
+      <div>
+        <button
+          type="button"
+          onClick={resetHighlightArea}
+          className="resetButton"
+        >
+          reset highlight areas
         </button>
       </div>
       <div onClick={handleSelectRange}>
