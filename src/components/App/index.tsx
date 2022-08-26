@@ -85,45 +85,35 @@ function App(): React.ReactElement {
 
     // INFO: 補齊螢光筆以外的純文字範圍始末點
     const allRanges: number[][] = [];
-    if (markRange[0][0] === 0) {
-      markRange.forEach((r, index) => {
-        if (index === 0) {
-          allRanges.push([...r, 1]);
-        } else {
-          allRanges.push([markRange[index - 1][1], markRange[index][0]]);
-          allRanges.push([...r, 1]);
-        }
-      });
-      allRanges.push([markRange[markRange.length - 1][1], content.length]);
-    } else {
+    if (markRange[0][0] !== 0) {
       allRanges.push([0, markRange[0][0]]);
-      markRange.forEach((r, index) => {
-        if (index === 0) {
-          allRanges.push([...r, 1]);
-        } else {
-          allRanges.push([markRange[index - 1][1], markRange[index][0]]);
-          allRanges.push([...r, 1]);
-        }
-      });
-      allRanges.push([markRange[markRange.length - 1][1], content.length]);
     }
+    markRange.forEach((r, index) => {
+      if (index === 0) {
+        allRanges.push([...r, 1]);
+      } else {
+        allRanges.push([markRange[index - 1][1], markRange[index][0]]);
+        allRanges.push([...r, 1]);
+      }
+    });
+    allRanges.push([markRange[markRange.length - 1][1], content.length]);
 
     return (
       <React.Fragment>
         {allRanges.map((range, index) => {
-          if (range.length === 2) {
-            // INFO: 純文字節點
-            return (
-              <React.Fragment key={index}>
-                {content.slice(range[0], range[1])}
-              </React.Fragment>
-            );
-          } else {
+          if (range.length === 3) {
             // INFO: 螢光筆標註區塊
             return (
               <span className="highlight" key={index}>
                 {content.slice(range[0], range[1])}
               </span>
+            );
+          } else {
+            // INFO: 純文字節點
+            return (
+              <React.Fragment key={index}>
+                {content.slice(range[0], range[1])}
+              </React.Fragment>
             );
           }
         })}
