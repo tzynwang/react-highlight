@@ -1,9 +1,5 @@
-export interface Raw {
+export interface MarkIndex {
   type: number;
   length: number;
-}
-
-export interface MarkIndex extends Raw {
-  index: number;
   range: number[];
 }
